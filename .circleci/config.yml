@@ -10,11 +10,20 @@ jobs:
       - run:
           name: terraform init & plan
           command: |
+            # hack to get vault installed. Should be installed in the docker container
             wget https://releases.hashicorp.com/vault/1.11.3/vault_1.11.3_linux_amd64.zip && \
             unzip vault_1.11.3_linux_amd64.zip && \
             mv vault /usr/local/bin/vault && \
-            rm vault_1.11.3_linux_amd64.zip
+            rm vault_1.11.3_linux_amd64.zip 
             vault -version
+
+            # load the vault creds and init the vault
+            echo $VAULT_ROLE_ID > vault/role-id
+            echo $VAULT_SECRET_ID > vault/secret-id
+            vault agent -config=vault/agent.hcl
+
+            source vault/terraform
+
             terraform init -input=false
             terraform plan -out tfapply -var-file terraform.tfvars
       - persist_to_workspace:
