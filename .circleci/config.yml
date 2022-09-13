@@ -10,6 +10,10 @@ jobs:
       - run:
           name: terraform init & plan
           command: |
+            wget https://releases.hashicorp.com/vault/1.11.3/vault_1.11.3_linux_amd64.zip && \
+            unzip vault_1.11.3_linux_amd64.zip && \
+            mv vault /usr/local/bin/vault && \
+            rm vault_1.11.3_linux_amd64.zip
             terraform init -input=false
             terraform plan -out tfapply -var-file terraform.tfvars
       - persist_to_workspace:
