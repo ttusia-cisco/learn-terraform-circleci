@@ -1,5 +1,25 @@
 version: 2
 
+commands:
+  init-vault:
+    steps:
+      - run: |
+          # hack to get vault installed. Should be installed in the docker container
+          wget https://releases.hashicorp.com/vault/1.11.3/vault_1.11.3_linux_amd64.zip && \
+          unzip vault_1.11.3_linux_amd64.zip -d /tmp && \
+          mv /tmp/vault /usr/local/bin/vault && \
+          rm vault_1.11.3_linux_amd64.zip 
+
+          # load the vault creds and init the vault
+          echo $VAULT_ROLE_ID > vault/role-id
+          echo $VAULT_SECRET_ID > vault/secret-id
+          vault agent -config=vault/agent.hcl
+          export VAULT_TOKEN=`cat /tmp/vault-token`
+  load-secrets:
+    steps:
+      - run: |
+          export TF_TOKEN_app_terraform_io=`vault kv get -field=TF_TOKEN_app_terraform_io kv/terraformcloud`
+
 jobs:
   plan-apply:
     working_directory: /tmp/project
@@ -7,23 +27,11 @@ jobs:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
       - checkout
+      - init-vault
+      - load-secrets
       - run:
           name: terraform init & plan
           command: |
-            # hack to get vault installed. Should be installed in the docker container
-            wget https://releases.hashicorp.com/vault/1.11.3/vault_1.11.3_linux_amd64.zip && \
-            unzip vault_1.11.3_linux_amd64.zip -d /tmp && \
-            mv /tmp/vault /usr/local/bin/vault && \
-            rm vault_1.11.3_linux_amd64.zip 
-            vault -version
-
-            # load the vault creds and init the vault
-            echo $VAULT_ROLE_ID > vault/role-id
-            echo $VAULT_SECRET_ID > vault/secret-id
-            vault agent -config=vault/agent.hcl
-            export VAULT_TOKEN=`cat /tmp/vault-token`
-            export TF_TOKEN_app_terraform_io=`vault kv get -field=TF_TOKEN_app_terraform_io kv/terraformcloud`
-
             terraform init -input=false
             terraform plan -out tfapply -var-file terraform.tfvars
       - persist_to_workspace:
@@ -37,6 +45,8 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - init-vault
+      - load-secrets
       - run:
           name: terraform
           command: |
@@ -52,6 +62,8 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - init-vault
+      - load-secrets
       - run:
           name: terraform create destroy plan
           command: |
@@ -67,6 +79,8 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - init-vault
+      - load-secrets
       - run:
           name: terraform destroy
           command: |
