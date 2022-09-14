@@ -15,8 +15,10 @@ commands:
           echo $VAULT_SECRET_ID > vault/secret-id
           vault agent -config=vault/agent.hcl
 
+  create-secrets:
+    steps:
+      - run: |
           export VAULT_TOKEN=`cat /tmp/vault-token`
-
           echo "export TF_TOKEN_app_terraform_io=`vault kv get -field=TF_TOKEN_app_terraform_io kv/terraformcloud`" >> /tmp/loadSecrets
           echo "export VAULT_TOKEN=`cat /tmp/vault-token`" >> /tmp/loadSecrets
   
