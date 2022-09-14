@@ -17,9 +17,8 @@ commands:
 
           export VAULT_TOKEN=`cat /tmp/vault-token`
 
-          cat <<EOT >> /tmp/loadSecrets
-          export TF_TOKEN_app_terraform_io=`vault kv get -field=TF_TOKEN_app_terraform_io kv/terraformcloud`
-          EOT
+          echo "export TF_TOKEN_app_terraform_io=`vault kv get -field=TF_TOKEN_app_terraform_io kv/terraformcloud`" >> /tmp/loadSecrets
+          echo "export VAULT_TOKEN=`cat /tmp/vault-token`" >> /tmp/loadSecrets
   
 jobs:
   plan-apply:
