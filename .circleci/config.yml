@@ -21,7 +21,8 @@ jobs:
             echo $VAULT_ROLE_ID > vault/role-id
             echo $VAULT_SECRET_ID > vault/secret-id
             vault agent -config=vault/agent.hcl
-            source ./vault/terraform
+            export VAULT_TOKEN=`cat /tmp/vault-token`
+            export TOKEN_app_terraform_io=`vault kv get -field=TF_TOKEN_app_terraform_io kv/terraformcloud`
 
             terraform init -input=false
             terraform plan -out tfapply -var-file terraform.tfvars
