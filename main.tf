@@ -6,6 +6,7 @@ provider "vault" {
   # app-secret-id = xxx
   auth_login {
     path = "auth/approle/login"
+    namespace = "admin"
     parameters = {
       role_id = var.app-role-id
       secret_id =  var.app-secret-id
