@@ -3,6 +3,10 @@ provider "vault" {
   # VAULT_ADDR = https://vault-cluster-public-vault-ab6b6e5f.9d5746b1.z1.hashicorp.cloud:8200
   auth_login {
     path = "auth/approle/login"
+    parameters {
+      role_id = "fakerole"
+      secret_id =  "fakesecret"
+    }
   }
 }
 
