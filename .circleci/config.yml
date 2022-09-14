@@ -21,7 +21,7 @@ jobs:
             echo $VAULT_ROLE_ID > vault/role-id
             echo $VAULT_SECRET_ID > vault/secret-id
             vault agent -config=vault/agent.hcl
-
+            pwd
             source vault/terraform
 
             terraform init -input=false
