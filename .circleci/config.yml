@@ -43,7 +43,8 @@ jobs:
             #export TF_TOKEN_app_terraform_io=`vault kv get -field=TF_TOKEN_app_terraform_io kv/terraformcloud`
             source /tmp/loadSecrets
             terraform init -input=false
-            terraform plan -out tfapply -var-file terraform.tfvars
+            #terraform plan -out tfapply -var-file terraform.tfvars
+            terraform plan -var-file terraform.tfvars
       - persist_to_workspace:
           root: .
           paths:
@@ -61,7 +62,8 @@ jobs:
           name: terraform
           command: |
             source /tmp/loadSecrets
-            terraform apply -auto-approve tfapply
+            #terraform apply -auto-approve tfapply
+            terraform apply -auto-approve
       - persist_to_workspace:
           root: .
           paths:
@@ -79,7 +81,8 @@ jobs:
           name: terraform create destroy plan
           command: |
             source /tmp/loadSecrets
-            terraform plan -destroy -out tfdestroy -var-file terraform.tfvars
+            #terraform plan -destroy -out tfdestroy -var-file terraform.tfvars
+            terraform plan -destroy -var-file terraform.tfvars
       - persist_to_workspace:
           root: .
           paths:
@@ -97,7 +100,8 @@ jobs:
           name: terraform destroy
           command: |
             source /tmp/loadSecrets
-            terraform apply -auto-approve tfdestroy
+            #terraform apply -auto-approve tfdestroy
+            terraform apply -auto-approve
 workflows:
   version: 2
   plan_approve_apply:
