@@ -19,7 +19,7 @@ auto_auth {
 template {
   contents = <<EOF
     {{ with secret "kv/terraformcloud" }}
-    export TF_TOKEN_app_terraform_io={{ .Data }}
+    export TF_TOKEN_app_terraform_io={{ .Data.TF_TOKEN_app_terraform_io }}
     {{ end }}
   EOF
   destination = "vault/terraform"
