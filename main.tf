@@ -1,11 +1,14 @@
 provider "vault" {
   # need the following env variables in terraform cloud
   # VAULT_ADDR = https://vault-cluster-public-vault-ab6b6e5f.9d5746b1.z1.hashicorp.cloud:8200
+  # VAULT_NAMESPACE = admin
+  # app-role-id = xxx
+  # app-secret-id = xxx
   auth_login {
     path = "auth/approle/login"
     parameters = {
-      role_id = "fakerole"
-      secret_id =  "fakesecret"
+      role_id = var.app-role-id
+      secret_id =  var.app-secret-id
     }
   }
 }
