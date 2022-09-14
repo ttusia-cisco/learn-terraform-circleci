@@ -3,24 +3,28 @@ version: 2.1
 commands:
   init-vault:
     steps:
-      - run: |
-          # hack to get vault installed. Should be installed in the docker container
-          wget https://releases.hashicorp.com/vault/1.11.3/vault_1.11.3_linux_amd64.zip && \
-          unzip vault_1.11.3_linux_amd64.zip -d /tmp && \
-          mv /tmp/vault /usr/local/bin/vault && \
-          rm vault_1.11.3_linux_amd64.zip 
+      - run: 
+          name: init-vault
+          command: |
+            # hack to get vault installed. Should be installed in the docker container
+            wget https://releases.hashicorp.com/vault/1.11.3/vault_1.11.3_linux_amd64.zip && \
+            unzip vault_1.11.3_linux_amd64.zip -d /tmp && \
+            mv /tmp/vault /usr/local/bin/vault && \
+            rm vault_1.11.3_linux_amd64.zip 
 
-          # load the vault creds and init the vault
-          echo $VAULT_ROLE_ID > vault/role-id
-          echo $VAULT_SECRET_ID > vault/secret-id
-          vault agent -config=vault/agent.hcl
+            # load the vault creds and init the vault
+            echo $VAULT_ROLE_ID > vault/role-id
+            echo $VAULT_SECRET_ID > vault/secret-id
+            vault agent -config=vault/agent.hcl
 
   create-secrets:
     steps:
-      - run: |
-          export VAULT_TOKEN=`cat /tmp/vault-token`
-          echo "export TF_TOKEN_app_terraform_io=`vault kv get -field=TF_TOKEN_app_terraform_io kv/terraformcloud`" >> /tmp/loadSecrets
-          echo "export VAULT_TOKEN=`cat /tmp/vault-token`" >> /tmp/loadSecrets
+      - run: 
+          name: create-secrets
+          command: |
+            export VAULT_TOKEN=`cat /tmp/vault-token`
+            echo "export TF_TOKEN_app_terraform_io=`vault kv get -field=TF_TOKEN_app_terraform_io kv/terraformcloud`" >> /tmp/loadSecrets
+            echo "export VAULT_TOKEN=`cat /tmp/vault-token`" >> /tmp/loadSecrets
   
 jobs:
   plan-apply:
