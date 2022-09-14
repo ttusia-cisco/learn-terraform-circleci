@@ -21,8 +21,7 @@ jobs:
             echo $VAULT_ROLE_ID > vault/role-id
             echo $VAULT_SECRET_ID > vault/secret-id
             vault agent -config=vault/agent.hcl
-            pwd
-            source vault/terraform
+            source ./vault/terraform
 
             terraform init -input=false
             terraform plan -out tfapply -var-file terraform.tfvars
