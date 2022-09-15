@@ -23,7 +23,7 @@ commands:
           name: create-secrets
           command: |
             export VAULT_TOKEN=`cat /tmp/vault-token`
-            echo "export TF_TOKEN_app_terraform_io=`vault kv get -field=TF_TOKEN_app_terraform_io terraform_cloud/terraform_cloud_token`" >> /tmp/loadSecrets
+            echo "export TF_TOKEN_app_terraform_io=`vault kv get -field=TF_TOKEN_app_terraform_io kv/terraformcloud`" >> /tmp/loadSecrets
             echo "export VAULT_TOKEN=`cat /tmp/vault-token`" >> /tmp/loadSecrets
   
 jobs:
